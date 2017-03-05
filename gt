@@ -1,0 +1,2 @@
+#!/bin/bash
+phpunit-skelgen generate-test --bootstrap './test/bootstrap.php' Jimb\\RestFilter\\$1 test-class Jimb\\RestFilter\\Test\\$1Test /usr/local/www/zw/restfilter/test/$1Test.php
