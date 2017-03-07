@@ -10,3 +10,6 @@ composer.lock
 
 # build phpunit tests
 gt
+
+# future
+future.txt

@@ -2,7 +2,6 @@
 namespace Jimb\RestFilter;
 
 use League\Fractal\TransformerAbstract;
-use Jimb\RestFilter\Test\CommonTransformerTest;
 
 /**
  * CommonTransformer 过滤转化器
@@ -16,6 +15,8 @@ class CommonTransformer extends TransformerAbstract
 
     //字段名
     protected $filedName = "fields";
+
+    const IS_NOT_IN_ARRAY = 'IS_NOT_IN_ARRAY';
 
     /**
      * 参数过滤器
@@ -89,7 +90,7 @@ class CommonTransformer extends TransformerAbstract
             if (strstr($fieldName, ".")) {
                 $this->impoStrForMarray($smallfieldArr, $fieldName, $resultFieldArr);
             } else {
-                $resultFieldArr[$fieldName] = $smallfieldArr[$fieldName];
+                $this -> setArrayVal($resultFieldArr,$fieldName,$smallfieldArr,$fieldName);
             }
         }
 
@@ -116,22 +117,54 @@ class CommonTransformer extends TransformerAbstract
             //不存在属性 就返回,避免生成null 数据
             if(!array_key_exists($filterArr[0],$mArray)) return;
             unset($filterArr[0]);
+            //递归
             $this->impoStrForMarray($mArray[$implofilterStr], implode(".", $filterArr), $resultFieldArr[$implofilterStr]);
         } else {
             //判断个体还是列表
             if (isset($mArray[0])) {
                 if (is_array($mArray[0])) {
                     foreach ($mArray as $k => $v) {
-                        $resultFieldArr[$k][$filterStr] = $v[$filterStr];
+                        $this -> setArrayVal($resultFieldArr[$k],$filterStr,$v,$filterStr);
                     }
                 } else {
-                    $resultFieldArr[$filterStr] = $mArray[$filterStr];
+                    $this -> setArrayVal($resultFieldArr,$filterStr,$mArray,$filterStr);
                 }
             } else {
-                $resultFieldArr[$filterStr] = $mArray[$filterStr];
+                $this -> setArrayVal($resultFieldArr,$filterStr,$mArray,$filterStr);
             }
-
         }
+    }
+
+
+    /**
+     * 在数组中取的设置值
+     *
+     * @param $ia
+     * @param $ik
+     * @param $ca
+     * @param $ck
+     */
+    function setArrayVal(&$ia,$ik,$ca,$ck){
+        if($this -> getArrayVal($ck,$ca,self::IS_NOT_IN_ARRAY) !== self::IS_NOT_IN_ARRAY){
+            $ia[$ik] = $this -> getArrayVal($ck,$ca,"");
+        }
+    }
+
+
+    /**
+     * 在数组中取的值
+     *
+     * @param $key
+     * @param $mArray
+     * @param string $default
+     * @return string
+     */
+    function getArrayVal($key, $mArray,$default="")
+    {
+        if (array_key_exists($key, $mArray)) {
+            return $mArray[$key];
+        }
+        return $default;
     }
 
     /**
@@ -141,9 +174,7 @@ class CommonTransformer extends TransformerAbstract
      */
     public function getFiled()
     {
-        if (array_key_exists($this->getFiledName(), $_REQUEST))
-            return $_REQUEST[$this->getFiledName()];
-        return [];
+        return $this -> getArrayVal($this->getFiledName(),$_REQUEST,[]);
     }
 
     /**

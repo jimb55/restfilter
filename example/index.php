@@ -1,56 +1,80 @@
 <?php
 
 require __DIR__ . "/../vendor/autoload.php";
+require __DIR__ . "/customTransformer.php";
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use Jimb\RestFilter\CommonTransformer;
+use Jimb\customTransformer;
 
 // 新建一个全局管理类
 $fractal = new Manager();
 
-$books = [
+$companys = [
     [
         'id' => '1',
-        'title' => 'Hogfather',
-        'name' => 'jiabi',
-        'yr' => '1998',
-        'author_name' => 'Philip K Dick',
-        'author_email' => 'philip@example.org',
+        'name' => 'jianbin',
+        'jgdaima' => 'WBERBKJKJEWR',
+        'date' => '1998',
+        'adresss' => '广州的某某小吃店',
+        'email' => 'tangtang@gmail.org',
     ],
     [
         'id' => '2',
-        'title' => 'Game Of Kill Everyone',
-        'yr' => '2014',
-        'name' => '223',
-        'author_name' => 'George R. R. Satan',
-        'author_email' => 'george@example.org',
+        'name' => 'jimb55',
+        'jgdaima' => 'FHEWIH3274WENR234NE',
+        'date' => '1994',
+        'adresss' => '北方的最高雪山',
+        'email' => 'Jimb@gmail.org',
         'myinfo' => [
             'name' => 'jimb55',
             'githubPage' => 'github://jimb55',
             'age' => '22',
-            'like' => 'i down no'
+            'like' => 'i down no',
+            'car'  => [
+                'id' => 123,
+                'name'  => "这是一台车",
+                'yic' => [
+                    'name' => 'de'
+                ]
+            ]
+        ]
+    ],
+    [
+        'id' => '3',
+        'name' => '糖糖',
+        'jgdaima' => 'FHEWIH3274WENR234NE',
+        'date' => '1994',
+        'adresss' => '东方最热的温泉',
+        'email' => 'www@gmail.org',
+        'myinfo' => [
+            'name' => 'jjjj',
+            'githubPage' => 'hello://world',
+            'age' => '22',
+            'like' => 'i 222 no'
         ]
     ]
 ];
 
 //or
 
-//$book = [
+//$companys = [
 //    'id' => '1',
-//    'title' => 'Hogfather',
-//    'name' => 'jiabi',
-//    'yr' => '1998',
-//    'author_name' => 'Philip K Dick',
-//    'author_email' => 'philip@example.org',
+//    'name' => 'jianbin',
+//    'jgdaima' => 'WBERBKJKJEWR',
+//    'date' => '1998',
+//    'adresss' => '广州的某某小吃店',
+//    'email' => 'tangtang@gmail.org',
 //];
 
 //列表
-$resource = new Collection($books, new CommonTransformer);
+//$resource = new Collection($companys, new CommonTransformer);
+$resource = new Collection($companys, new customTransformer);
 
 //单项
-//$resource = new Item($book, new CommonTransformer);
+//$resource = new Item($companys, new CommonTransformer);
 
 // 返回
 echo $fractal->createData($resource)->toJson();
