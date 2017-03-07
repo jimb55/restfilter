@@ -18,7 +18,7 @@ $companys = [
         'name' => 'jianbin',
         'jgdaima' => 'WBERBKJKJEWR',
         'date' => '1998',
-        'adresss' => '广州的某某小吃店',
+        'adresss' => 'ggz',
         'email' => 'tangtang@gmail.org',
     ],
     [
@@ -26,7 +26,7 @@ $companys = [
         'name' => 'jimb55',
         'jgdaima' => 'FHEWIH3274WENR234NE',
         'date' => '1994',
-        'adresss' => '北方的最高雪山',
+        'adresss' => 'bbf',
         'email' => 'Jimb@gmail.org',
         'myinfo' => [
             'name' => 'jimb55',
@@ -35,7 +35,7 @@ $companys = [
             'like' => 'i down no',
             'car'  => [
                 'id' => 123,
-                'name'  => "这是一台车",
+                'name'  => "this is a car",
                 'yic' => [
                     'name' => 'de'
                 ]
@@ -44,10 +44,10 @@ $companys = [
     ],
     [
         'id' => '3',
-        'name' => '糖糖',
+        'name' => 'tt',
         'jgdaima' => 'FHEWIH3274WENR234NE',
         'date' => '1994',
-        'adresss' => '东方最热的温泉',
+        'adresss' => 'ddw',
         'email' => 'www@gmail.org',
         'myinfo' => [
             'name' => 'jjjj',
@@ -57,7 +57,6 @@ $companys = [
         ]
     ]
 ];
-
 //or
 
 //$companys = [
@@ -70,11 +69,12 @@ $companys = [
 //];
 
 //列表
-//$resource = new Collection($companys, new CommonTransformer);
-$resource = new Collection($companys, new customTransformer);
+$resource = new Collection($companys, new CommonTransformer);
+//$resource = new Collection($companys, new customTransformer);
 
 //单项
 //$resource = new Item($companys, new CommonTransformer);
+
 
 // 返回
 echo $fractal->createData($resource)->toJson();
