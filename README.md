@@ -96,7 +96,7 @@ $companys = [
     'name' => 'jianbin',
     'jgdaima' => 'WBERBKJKJEWR',
     'date' => '1998',
-    'adresss' => '广州的某某小吃店',
+    'adresss' => '广州的某某小吃店.',
     'email' => 'tangtang@gmail.org',
 ];
 
