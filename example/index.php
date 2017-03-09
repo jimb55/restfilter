@@ -12,48 +12,80 @@ use Jimb\customTransformer;
 // 新建一个全局管理类
 $fractal = new Manager();
 
+//$companys = [
+//    [
+////        'id' => '1',
+//        'name' => 'jianbin',
+//        'jgdaima' => 'WBERBKJKJEWR',
+//        'date' => '1998',
+//        'adresss' => 'ggz',
+//        'email' => 'tangtang@gmail.org',
+//    ],
+//    [
+//        'id' => '2',
+//        'name' => 'jimb55',
+//        'jgdaima' => 'FHEWIH3274WENR234NE',
+//        'date' => '1994',
+//        'adresss' => 'bbf',
+//        'email' => 'Jimb@gmail.org',
+//        'myinfo' => [
+//            'name' => 'jimb55',
+//            'githubPage' => 'github://jimb55',
+//            'age' => '22',
+//            'like' => 'i down no',
+//            'car'  => [
+//                'id' => 123,
+//                'name'  => "this is a car",
+//                'yic' => [
+//                    'name' => 'de'
+//                ]
+//            ]
+//        ]
+//    ],
+//    [
+//        'id' => '3',
+//        'name' => 'tt',
+//        'jgdaima' => 'FHEWIH3274WENR234NE',
+//        'date' => '1994',
+//        'adresss' => 'ddw',
+//        'email' => 'www@gmail.org',
+//        'myinfo' => [
+//            'name' => 'jjjj',
+//            'githubPage' => 'hello://world',
+//            'age' => '22',
+//            'like' => 'i 222 no'
+//        ]
+//    ]
+//];
+
+
 $companys = [
     [
         'id' => '1',
         'name' => 'jianbin',
-        'jgdaima' => 'WBERBKJKJEWR',
-        'date' => '1998',
-        'adresss' => 'ggz',
-        'email' => 'tangtang@gmail.org',
-    ],
-    [
-        'id' => '2',
-        'name' => 'jimb55',
-        'jgdaima' => 'FHEWIH3274WENR234NE',
-        'date' => '1994',
-        'adresss' => 'bbf',
-        'email' => 'Jimb@gmail.org',
         'myinfo' => [
-            'name' => 'jimb55',
-            'githubPage' => 'github://jimb55',
-            'age' => '22',
-            'like' => 'i down no',
+            'name' => 'kankanJ',
             'car'  => [
                 'id' => 123,
-                'name'  => "this is a car",
+                'name'  => "car",
                 'yic' => [
-                    'name' => 'de'
+                    'name' => 'hhhhcao'
                 ]
             ]
         ]
     ],
     [
-        'id' => '3',
-        'name' => 'tt',
-        'jgdaima' => 'FHEWIH3274WENR234NE',
-        'date' => '1994',
-        'adresss' => 'ddw',
-        'email' => 'www@gmail.org',
+        'id' => '2',
+        'name' => 'jimb55',
         'myinfo' => [
-            'name' => 'jjjj',
-            'githubPage' => 'hello://world',
-            'age' => '22',
-            'like' => 'i 222 no'
+            'name' => 'MWIJD',
+            'car'  => [
+                'id' => 121,
+                'name'  => "bus",
+                'yic' => [
+                    'name' => 'bilibili'
+                ]
+            ]
         ]
     ]
 ];

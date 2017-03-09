@@ -85,7 +85,6 @@ class CommonTransformerTest extends \PHPUnit\Framework\TestCase
         $fractal = new \League\Fractal\Manager();
         $resource = new \League\Fractal\Resource\Collection($this->getData(),$this->object);
 
-
         $this->assertEquals($fractal->createData($resource)->toJson(), $eq);
     }
 
@@ -95,18 +94,27 @@ class CommonTransformerTest extends \PHPUnit\Framework\TestCase
      */
     public function addGetTransformArrData()
     {
+        $d1 = '{"data":[{"id":"1","name":"jianbin","myinfo":{"name":"kankanJ","car":{"id":123,"name":"car","yic":{"name":"hhhhcao"}}}},{"id":"2","name":"jimb55","myinfo":{"name":"MWIJD","car":{"id":121,"name":"bus","yic":{"name":"bilibili"}}}}]}';
+        $d2 = '{"data":[{"myinfo":{"name":"kankanJ","car":{"id":123,"name":"car","yic":{"name":"hhhhcao"}}},"id":"1","name":"jianbin"},{"myinfo":{"name":"MWIJD","car":{"id":121,"name":"bus","yic":{"name":"bilibili"}}},"id":"2","name":"jimb55"}]}';
+        //'<  >' => ['', ''],
         return [
-            '< id,name >' => ['id,name', '{"data":[{"id":"1","name":"jianbin"},{"id":"2","name":"jimb55"},{"id":"3","name":"tt"}]}'],
-            '< id  >' => ['id', '{"data":[{"id":"1"},{"id":"2"},{"id":"3"}]}'],
-            '< id,name,myinfo.car >' => ['id,name,myinfo.car', '{"data":[{"id":"1","name":"jianbin"},{"id":"2","name":"jimb55","myinfo":{"car":{"id":123,"name":"this is a car","yic":{"name":"de"}}}},{"id":"3","name":"tt","myinfo":null}]}'],
-            '< id,name,myinfo.car.yic >' => ['id,name,myinfo.car.yic', '{"data":[{"id":"1","name":"jianbin"},{"id":"2","name":"jimb55","myinfo":{"car":{"yic":{"name":"de"}}}},{"id":"3","name":"tt","myinfo":null}]}'],
-            '< id,name,myinfo.car.Notyic >' => ['id,name,myinfo.car.Notyic', '{"data":[{"id":"1","name":"jianbin"},{"id":"2","name":"jimb55","myinfo":{"car":null}},{"id":"3","name":"tt","myinfo":null}]}'],
-            '< 空 >' => ['', '{"data":[{"id":"1","name":"jianbin","jgdaima":"WBERBKJKJEWR","date":"1998","adresss":"ggz","email":"tangtang@gmail.org"},{"id":"2","name":"jimb55","jgdaima":"FHEWIH3274WENR234NE","date":"1994","adresss":"bbf","email":"Jimb@gmail.org","myinfo":{"name":"jimb55","githubPage":"github:\/\/jimb55","age":"22","like":"i down no","car":{"id":123,"name":"this is a car","yic":{"name":"de"}}}},{"id":"3","name":"tt","jgdaima":"FHEWIH3274WENR234NE","date":"1994","adresss":"ddw","email":"www@gmail.org","myinfo":{"name":"jjjj","githubPage":"hello:\/\/world","age":"22","like":"i 222 no"}}]}'],
+            '< 空 >' => ['', '{"data":[{"id":"1","name":"jianbin","myinfo":{"name":"kankanJ","car":{"id":123,"name":"car","yic":{"name":"hhhhcao"}}}},{"id":"2","name":"jimb55","myinfo":{"name":"MWIJD","car":{"id":121,"name":"bus","yic":{"name":"bilibili"}}}}]}'],
+            '< id >' => ['id', '{"data":[{"id":"1"},{"id":"2"}]}'],
+            '< id,name >' => ['id,name', '{"data":[{"id":"1","name":"jianbin"},{"id":"2","name":"jimb55"}]}'],
+            '< myinfo,id,name >' => ['myinfo,id,name', $d1],
+            '< id,name,myinfo >' => ['id,name,myinfo', $d1],
+            '< myinfo.name,myinfo.car,id,name,myinfo.car >' => ['myinfo.name,myinfo.car,id,name,myinfo.car',$d2],
+            '< id,name,myinfo.car >' => ['myinfo.name,myinfo.car,id,name,myinfo.car',$d2],
+            '< myinfo.name,myinfo.car.id,myinfo.car.yic >' => ['myinfo.name,myinfo.car.id,myinfo.car.yic', '{"data":[{"myinfo":{"name":"kankanJ","car":{"id":123,"yic":{"name":"hhhhcao"}}}},{"myinfo":{"name":"MWIJD","car":{"id":121,"yic":{"name":"bilibili"}}}}]}'],
+            '< myinfo.name,myinfo.car.id,myinfo.car.yic,, >' => ['myinfo.name,myinfo.car.id,myinfo.car.yic,,', '{"data":[{"myinfo":{"name":"kankanJ","car":{"id":123,"yic":{"name":"hhhhcao"}}},"":""},{"myinfo":{"name":"MWIJD","car":{"id":121,"yic":{"name":"bilibili"}}},"":""}]}'],
+            '< id,noval,myinfo.name,myinfo.car.id,myinfo.car.yic.noval >' => ['id,noval,myinfo.name,myinfo.car.id,myinfo.car.yic.noval', '{"data":[{"id":"1","noval":"","myinfo":{"name":"kankanJ","car":{"id":123,"yic":{"noval":""}}}},{"id":"2","noval":"","myinfo":{"name":"MWIJD","car":{"id":121,"yic":{"noval":""}}}}]}']
         ];
     }
 
 
     /**
+     * 数据
+     *
      * @return array
      */
     public function getData()
@@ -115,47 +123,33 @@ class CommonTransformerTest extends \PHPUnit\Framework\TestCase
             [
                 'id' => '1',
                 'name' => 'jianbin',
-                'jgdaima' => 'WBERBKJKJEWR',
-                'date' => '1998',
-                'adresss' => 'ggz',
-                'email' => 'tangtang@gmail.org',
-            ],
-            [
-                'id' => '2',
-                'name' => 'jimb55',
-                'jgdaima' => 'FHEWIH3274WENR234NE',
-                'date' => '1994',
-                'adresss' => 'bbf',
-                'email' => 'Jimb@gmail.org',
                 'myinfo' => [
-                    'name' => 'jimb55',
-                    'githubPage' => 'github://jimb55',
-                    'age' => '22',
-                    'like' => 'i down no',
+                    'name' => 'kankanJ',
                     'car'  => [
                         'id' => 123,
-                        'name'  => "this is a car",
+                        'name'  => "car",
                         'yic' => [
-                            'name' => 'de'
+                            'name' => 'hhhhcao'
                         ]
                     ]
                 ]
             ],
             [
-                'id' => '3',
-                'name' => 'tt',
-                'jgdaima' => 'FHEWIH3274WENR234NE',
-                'date' => '1994',
-                'adresss' => 'ddw',
-                'email' => 'www@gmail.org',
+                'id' => '2',
+                'name' => 'jimb55',
                 'myinfo' => [
-                    'name' => 'jjjj',
-                    'githubPage' => 'hello://world',
-                    'age' => '22',
-                    'like' => 'i 222 no'
+                    'name' => 'MWIJD',
+                    'car'  => [
+                        'id' => 121,
+                        'name'  => "bus",
+                        'yic' => [
+                            'name' => 'bilibili'
+                        ]
+                    ]
                 ]
             ]
         ];
     }
 
 }
+//id,name,myinfo.car.name,myinfo.car.id

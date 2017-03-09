@@ -16,7 +16,24 @@ class CommonTransformer extends TransformerAbstract
     //字段名
     protected $filedName = "fields";
 
+    //是否自动补全结构
+    private $isCompletion;
+
+    //补全结构默认值
+    private $defaultVal;
+
     const IS_NOT_IN_ARRAY = 'IS_NOT_IN_ARRAY';
+
+    /**
+     * CommonTransformer constructor.
+     * @param bool $isCompletion
+     * @param string $default
+     */
+    public function __construct($isCompletion = true, $defaultVal = "")
+    {
+        $this->isCompletion = $isCompletion;
+        $this->defaultVal = $defaultVal;
+    }
 
     /**
      * 参数过滤器
@@ -71,9 +88,21 @@ class CommonTransformer extends TransformerAbstract
         if (strstr($this->getFiled(), ".")) {
             return $this->depth($mArray, $filter);
         } else {
-            return array_intersect_key($mArray, $filter);
+            return $this->shallow($mArray, $filter);
         }
     }
+
+    /**
+     * 浅度处理
+     *
+     * @param $mArray
+     * @param $filter
+     * @return array
+     */
+    private function shallow($mArray,$filter){
+        return array_intersect_key($mArray, $filter);
+    }
+
 
     /**
      * 深度处理
@@ -87,14 +116,49 @@ class CommonTransformer extends TransformerAbstract
         $smallfieldArr = $mArray;
         $resultFieldArr = [];
         foreach ($filter as $fieldName => $val) {
+            $this->isIsCompletion() ? $this->autoCompletion($resultFieldArr, explode(".", $fieldName)): null;
             if (strstr($fieldName, ".")) {
                 $this->impoStrForMarray($smallfieldArr, $fieldName, $resultFieldArr);
             } else {
-                $this -> setArrayVal($resultFieldArr,$fieldName,$smallfieldArr,$fieldName);
+                $this->setArrayVal($resultFieldArr, $fieldName, $smallfieldArr, $fieldName);
             }
         }
 
         return $resultFieldArr;
+    }
+
+
+    /**
+     * 自动保存
+     *
+     * @param $resultFieldArr
+     * @param $fieldArr
+     */
+    private function autoCompletion(&$resultFieldArr, $fieldArr)
+    {
+        $fieldName = $fieldArr[0];
+        if(is_array($resultFieldArr) && array_key_exists($fieldName,$resultFieldArr)){
+            //
+        }else{
+            $resultFieldArr[$fieldName] = $this -> getDefaultVal();
+        }
+
+        //删除数组项
+        array_splice($fieldArr, 0, 1);
+        if (count($fieldArr)) {
+            $this->autoCompletion($resultFieldArr[$fieldName], $fieldArr);
+        }
+    }
+
+    /**
+     * 构建结构
+     *
+     * @param $resultFieldArr
+     * @param $fieldName
+     */
+    private function generateTree(&$resultFieldArr, $fieldName)
+    {
+        $resultFieldArr[$fieldName] = $this->getDefaultVal();
     }
 
 
@@ -108,14 +172,16 @@ class CommonTransformer extends TransformerAbstract
         //如果对象不存在过滤的的字段就不作处理
         //如果处在就判断是否是存在子级别,不存在就进行过滤
         //存在子级就进行递归,直到不存在子级为止
-        if($mArray==null && $resultFieldArr == null)
+        if ($mArray == null && $resultFieldArr == null)
             return;
 
         if (strstr($filterStr, ".")) {
             $filterArr = explode(".", $filterStr);
             $implofilterStr = $filterArr[0];
             //不存在属性 就返回,避免生成null 数据
-            if(!array_key_exists($filterArr[0],$mArray)) return;
+            if (!array_key_exists($filterArr[0], $mArray)) {
+                return;
+            }
             unset($filterArr[0]);
             //递归
             $this->impoStrForMarray($mArray[$implofilterStr], implode(".", $filterArr), $resultFieldArr[$implofilterStr]);
@@ -124,13 +190,13 @@ class CommonTransformer extends TransformerAbstract
             if (isset($mArray[0])) {
                 if (is_array($mArray[0])) {
                     foreach ($mArray as $k => $v) {
-                        $this -> setArrayVal($resultFieldArr[$k],$filterStr,$v,$filterStr);
+                        $this->setArrayVal($resultFieldArr[$k], $filterStr, $v, $filterStr);
                     }
                 } else {
-                    $this -> setArrayVal($resultFieldArr,$filterStr,$mArray,$filterStr);
+                    $this->setArrayVal($resultFieldArr, $filterStr, $mArray, $filterStr);
                 }
             } else {
-                $this -> setArrayVal($resultFieldArr,$filterStr,$mArray,$filterStr);
+                $this->setArrayVal($resultFieldArr, $filterStr, $mArray, $filterStr);
             }
         }
     }
@@ -144,9 +210,10 @@ class CommonTransformer extends TransformerAbstract
      * @param $ca
      * @param $ck
      */
-    function setArrayVal(&$ia,$ik,$ca,$ck){
-        if($this -> getArrayVal($ck,$ca,self::IS_NOT_IN_ARRAY) !== self::IS_NOT_IN_ARRAY){
-            $ia[$ik] = $this -> getArrayVal($ck,$ca,"");
+    function setArrayVal(&$ia, $ik, $ca, $ck)
+    {
+        if ($this->getArrayVal($ck, $ca, self::IS_NOT_IN_ARRAY) !== self::IS_NOT_IN_ARRAY) {
+            $ia[$ik] = $this->getArrayVal($ck, $ca, "");
         }
     }
 
@@ -159,7 +226,7 @@ class CommonTransformer extends TransformerAbstract
      * @param string $default
      * @return string
      */
-    function getArrayVal($key, $mArray,$default="")
+    function getArrayVal($key, $mArray, $default = "")
     {
         if (array_key_exists($key, $mArray)) {
             return $mArray[$key];
@@ -174,7 +241,7 @@ class CommonTransformer extends TransformerAbstract
      */
     public function getFiled()
     {
-        return $this -> getArrayVal($this->getFiledName(),$_REQUEST,[]);
+        return $this->getArrayVal($this->getFiledName(), $_REQUEST, []);
     }
 
     /**
@@ -205,6 +272,38 @@ class CommonTransformer extends TransformerAbstract
     public function setFiledName($filedName)
     {
         $this->filedName = $filedName;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIsCompletion()
+    {
+        return $this->isCompletion;
+    }
+
+    /**
+     * @param boolean $isCompletion
+     */
+    public function setIsCompletion($isCompletion)
+    {
+        $this->isCompletion = $isCompletion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultVal()
+    {
+        return $this->defaultVal;
+    }
+
+    /**
+     * @param string $defaultVal
+     */
+    public function setDefaultVal($defaultVal)
+    {
+        $this->defaultVal = $defaultVal;
     }
 
 }
