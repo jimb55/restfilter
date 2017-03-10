@@ -188,8 +188,9 @@ Jimb\RestFilter\RestFilterProvider::class
 使用
 ==========
 ```php
-$fractal = app('RestFilter');
- return $fractal -> collection() ->toJson(Product::orderBy ( 'id', 'desc' )-> get() -> toArray());
+
+return app('RestFilter') -> collection() ->toJson(Product::orderBy ( 'id', 'desc' )-> get() -> toArray());
+
 ```
 
 
