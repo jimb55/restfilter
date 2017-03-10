@@ -2,7 +2,7 @@
 1在一些API接口中,容易存在不必要的数据,例如某个表格需要输出一个公司的列表,然后列表需要公司的名字,地址,机构代码,id...等等的信息,然后做了这
 个接口.在其他的某些地方,例如需要做一个公司的下拉选择框,但这时上述接口却返回许多不必要的数据(地址,机构代码...),明明我只关注的是id,名字
 这两个字段,这就容易做成网络io流失了.而`restfilter`就是在不影响业务代码的情况下解决这个问题.
-2把返回json 交给前端,发送的字段会自动补全结构,前端就不会因为找不到字段而报错
+<br>2把返回json 交给前端,发送的字段会自动补全结构,前端就不会因为找不到字段而报错
 
 # 安装
 ```
@@ -121,6 +121,20 @@ http://127.0.0.1/example/?fields=id,name
 http://127.0.0.1/example/?fields=id,name,myinfo.name
 ```
 
+<br> 如果你想更加简单 可以使用 FractalAdapter
+```php
+<?php
+
+require __DIR__ . "/../vendor/autoload.php";
+require __DIR__ . "/customTransformer.php";
+
+use Jimb\RestFilter\FractalAdapter;
+$companys = [...];
+echo FractalAdapter::getInstance() -> collection()-> toJson($companys);
+//单项
+//echo FractalAdapter::getInstance() -> item()-> toJson($companys);
+```
+
 参数 `fields` 是可以修改了,下面讲到
 <br> 这里显示过滤前改变返回结构和更改过滤的参数名
 ```php
@@ -156,3 +170,30 @@ class customTransformer extends CommonTransformer
     }
 }
 ```
+
+# Laravel 支持
+
+安装依然一样，可以加到 require
+```
+"require": { 
+    "php": ">=5.6.4", 
+    "jimb/restfilter":"0.1.*"
+ }
+```
+注册服务提供者 `config/app.php`
+```
+Jimb\RestFilter\RestFilterProvider::class
+```
+
+使用
+==========
+```php
+$fractal = app('RestFilter');
+ return $fractal -> collection() ->toJson(Product::orderBy ( 'id', 'desc' )-> get() -> toArray());
+```
+
+
+
+
+
+

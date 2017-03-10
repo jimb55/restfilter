@@ -3,14 +3,8 @@
 require __DIR__ . "/../vendor/autoload.php";
 require __DIR__ . "/customTransformer.php";
 
-use League\Fractal\Manager;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
-use Jimb\RestFilter\CommonTransformer;
-use Jimb\customTransformer;
+use Jimb\RestFilter\FractalAdapter;
 
-// 新建一个全局管理类
-$fractal = new Manager();
 
 $companys = [
     [
@@ -42,24 +36,5 @@ $companys = [
         ]
     ]
 ];
-//or
 
-//$companys = [
-//    'id' => '1',
-//    'name' => 'jianbin',
-//    'jgdaima' => 'WBERBKJKJEWR',
-//    'date' => '1998',
-//    'adresss' => '广州的某某小吃店',
-//    'email' => 'tangtang@gmail.org',
-//];
-
-//列表
-$resource = new Collection($companys, new CommonTransformer);
-//$resource = new Collection($companys, new customTransformer);
-
-//单项
-//$resource = new Item($companys, new CommonTransformer);
-
-
-// 返回
-echo $fractal->createData($resource)->toJson();
+echo FractalAdapter::getInstance() -> collection()-> toJson($companys);
